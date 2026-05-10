@@ -1,5 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+
+const navClass = ({ isActive }) =>
+  `rounded-xl px-4 py-2 text-sm font-semibold transition ${
+    isActive ? 'bg-white text-slate-950' : 'text-white/70 hover:text-white hover:bg-white/10'
+  }`;
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -13,17 +18,27 @@ export default function Navbar() {
   };
 
   return (
-    <div className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-2xl text-white">
-      <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-        <Link to="/home" className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 grid place-items-center shadow-[0_10px_35px_rgba(99,102,241,0.35)]">
-            ✦
+    <div className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/80 backdrop-blur-2xl text-white">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 font-black shadow-lg">
+            R
           </div>
           <div>
-            <div className="font-bold leading-none">RealEarn</div>
-            <div className="text-xs text-white/45">Earn verified real income</div>
+            <div className="font-black leading-none">RealEarn</div>
+            <div className="text-xs text-white/45">Real income platform</div>
           </div>
-        </Link>
+        </div>
+
+        <div className="hidden items-center gap-2 md:flex">
+          <NavLink to="/home" className={navClass}>Home</NavLink>
+          <NavLink to="/tasks" className={navClass}>Tasks</NavLink>
+          <NavLink to="/invite" className={navClass}>Invite</NavLink>
+          <NavLink to="/leaderboard" className={navClass}>Leaderboard</NavLink>
+          <NavLink to="/withdrawal" className={navClass}>Withdraw</NavLink>
+          <NavLink to="/settings" className={navClass}>Settings</NavLink>
+          <NavLink to="/profile" className={navClass}>Profile</NavLink>
+        </div>
 
         <div className="flex items-center gap-3">
           <img
@@ -33,7 +48,7 @@ export default function Navbar() {
           />
           <button
             onClick={handleLogout}
-            className="rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/16 transition"
+            className="rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/15"
           >
             Logout
           </button>
