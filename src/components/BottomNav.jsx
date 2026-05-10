@@ -1,5 +1,6 @@
 import { Home, Trophy, Wallet, User, Settings, Gift } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';   // ← এটা যোগ করো
 
 const BottomNav = () => {
   const location = useLocation();
