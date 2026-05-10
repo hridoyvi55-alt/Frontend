@@ -1,83 +1,112 @@
-import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import StatCard from '../components/StatCard';
+import BottomNav from '../components/BottomNav';
+import { motion } from 'framer-motion';
+import { Gift, Users, Trophy, Wallet } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const cards = [
-  { title: 'Ads Income', desc: 'Watch verified ads and earn AED.', icon: '📺', color: 'from-indigo-500 to-cyan-400', to: '/tasks' },
-  { title: 'Survey Income', desc: 'Complete surveys from trusted partners.', icon: '📝', color: 'from-purple-500 to-pink-500', to: '/tasks' },
-  { title: 'Game Install', desc: 'Install and verify partner apps.', icon: '🎮', color: 'from-emerald-500 to-teal-400', to: '/tasks' },
-  { title: 'Invite Friends', desc: 'Share your link and earn 2 AED per invite.', icon: '👥', color: 'from-amber-500 to-orange-400', to: '/invite' },
-  { title: 'Withdraw', desc: 'Request payout in bKash, Nagad, PayPal or Binance.', icon: '💸', color: 'from-sky-500 to-blue-500', to: '/withdrawal' },
-  { title: 'Leaderboard', desc: 'See top earners and total income ranks.', icon: '🏆', color: 'from-fuchsia-500 to-pink-500', to: '/leaderboard' }
-];
+const Home = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-export default function Home() {
-  const { user } = useAuth();
+  const greeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    return "Good Evening";
+  };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white pb-24 md:pb-10 relative">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.20),_transparent_25%),radial-gradient(circle_at_bottom_right,_rgba(168,85,247,0.20),_transparent_28%)]" />
-      <div className="relative mx-auto max-w-7xl px-4 py-6">
-        <div className="rounded-[2rem] border border-white/10 bg-white/6 backdrop-blur-2xl p-6 shadow-2xl">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-            <div>
-              <p className="text-white/55">Welcome back</p>
-              <h1 className="mt-2 text-4xl font-black tracking-tight">
-                {user?.displayName || 'User'}
-              </h1>
-              <p className="mt-3 max-w-2xl text-white/65">
-                Premium verified earning dashboard for tasks, invites, withdrawals, leaderboard and settings.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-3xl bg-slate-900/75 p-5 border border-white/10 min-w-[160px]">
-                <div className="text-white/45 text-sm">Balance</div>
-                <div className="mt-2 text-3xl font-black">0.00 AED</div>
-              </div>
-              <div className="rounded-3xl bg-slate-900/75 p-5 border border-white/10 min-w-[160px]">
-                <div className="text-white/45 text-sm">UID</div>
-                <div className="mt-2 text-xs font-mono break-all">{user?.uid}</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            <StatCard label="Today Earnings" value="0.00 AED" icon="⚡" />
-            <StatCard label="Total Income" value="0.00 AED" icon="💎" />
-            <StatCard label="Referral Bonus" value="2 AED" icon="👥" />
-          </div>
+    <div className="min-h-screen bg-[#0a0a1f] pb-20">
+      {/* Header */}
+      <div className="pt-8 px-6 flex items-center justify-between">
+        <div>
+          <p className="text-cyan-400 text-sm font-medium">{greeting()},</p>
+          <h1 className="text-3xl font-bold text-white">
+            {user?.displayName?.split(" ")[0] || "Champion"}
+          </h1>
         </div>
-
-        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {cards.map((card) => (
-            <Link
-              key={card.title}
-              to={card.to}
-              className="group rounded-[2rem] border border-white/10 bg-white/6 p-5 hover:bg-white/10 transition shadow-lg"
-            >
-              <div className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${card.color} grid place-items-center text-2xl shadow-lg`}>
-                {card.icon}
-              </div>
-              <h3 className="mt-4 text-xl font-bold">{card.title}</h3>
-              <p className="mt-2 text-white/65">{card.desc}</p>
-            </Link>
-          ))}
-        </div>
-
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            ['Task', '⚡'],
-            ['Invite', '👥'],
-            ['Withdraw', '💸'],
-            ['Leaderboard', '🏆']
-          ].map(([name, icon]) => (
-            <Link key={name} to={`/${name.toLowerCase()}`} className="rounded-3xl border border-white/10 bg-white/6 p-5 text-center hover:bg-white/10 transition">
-              <div className="text-3xl mb-2">{icon}</div>
-              <div className="font-bold">{name}</div>
-            </Link>
-          ))}
+        <div 
+          onClick={() => navigate('/profile')}
+          className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-cyan-400 cursor-pointer"
+        >
+          <img 
+            src={user?.photoURL || "https://via.placeholder.com/150"} 
+            alt="Profile" 
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
+
+      {/* Balance Card */}
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="mx-6 mt-8 glass rounded-3xl p-8 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-cyan-400 to-purple-600 opacity-10 rounded-full -mr-10 -mt-10"></div>
+        
+        <p className="text-gray-400 text-sm">Total Balance</p>
+        <div className="flex items-baseline mt-2">
+          <span className="text-6xl font-bold text-white">0.00</span>
+          <span className="text-3xl ml-2 text-cyan-400">AED</span>
+        </div>
+        <p className="text-emerald-400 text-sm mt-3 flex items-center gap-1">
+          +12.50 AED today
+        </p>
+      </motion.div>
+
+      {/* Quick Actions */}
+      <div className="px-6 mt-10">
+        <h2 className="text-xl font-semibold mb-5 text-white">Earn Now</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <motion.div 
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => navigate('/tasks')}
+            className="glass rounded-3xl p-6 cursor-pointer border border-white/10 hover:border-cyan-400/50 transition-all"
+          >
+            <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-4">
+              <Gift size={32} />
+            </div>
+            <h3 className="font-bold text-xl">Complete Tasks</h3>
+            <p className="text-gray-400 text-sm mt-1">Ads • Survey • Games</p>
+          </motion.div>
+
+          <motion.div 
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => navigate('/invite')}
+            className="glass rounded-3xl p-6 cursor-pointer border border-white/10 hover:border-cyan-400/50 transition-all"
+          >
+            <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-4">
+              <Users size={32} />
+            </div>
+            <h3 className="font-bold text-xl">Invite Friends</h3>
+            <p className="text-gray-400 text-sm mt-1">2 AED per referral</p>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Leaderboard Teaser */}
+      <div className="px-6 mt-8">
+        <div 
+          onClick={() => navigate('/leaderboard')}
+          className="glass rounded-3xl p-6 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-all"
+        >
+          <div className="flex items-center gap-4">
+            <Trophy className="text-yellow-400" size={36} />
+            <div>
+              <p className="font-semibold">Top Earners</p>
+              <p className="text-sm text-gray-400">See who is leading</p>
+            </div>
+          </div>
+          <div className="text-cyan-400">→</div>
+        </div>
+      </div>
+
+      <BottomNav />
     </div>
   );
-}
+};
+
+export default Home;
