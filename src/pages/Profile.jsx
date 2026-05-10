@@ -4,7 +4,7 @@ export default function Profile() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-4">
+    <div className="min-h-screen bg-slate-950 text-white pb-24 md:pb-10 p-4 relative">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(168,85,247,0.18),_transparent_30%)]" />
       <div className="relative mx-auto max-w-2xl">
         <div className="rounded-[2rem] border border-white/10 bg-white/6 backdrop-blur-2xl p-6 shadow-2xl">
