@@ -1,133 +1,124 @@
 import { useState } from 'react';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import {
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
+} from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
-import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
+import { FcGoogle } from 'react-icons/fc';
 
-const Login = () => {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const nav = useNavigate();
 
-  if (user) {
-    navigate('/home');
-    return null;
-  }
-
-  const handleGoogleLogin = async () => {
-    setLoading(true);
+  const googleLogin = async () => {
     try {
+      setLoading(true);
       await signInWithPopup(auth, googleProvider);
-      toast.success('Google login successful!');
-    } catch (error) {
-      toast.error('Google login failed: ' + error.message);
+      nav('/home');
+    } catch (err) {
+      alert(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleEmailLogin = async (e) => {
+  const login = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
+      setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
-      toast.success('Login successful!');
-    } catch (error) {
-      toast.error('Login failed: ' + error.message);
+      nav('/home');
+    } catch (err) {
+      alert(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSignup = async (e) => {
+  const signup = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
+      setLoading(true);
       await createUserWithEmailAndPassword(auth, email, password);
-      toast.success('Account created successfully!');
-    } catch (error) {
-      toast.error('Signup failed: ' + error.message);
+      nav('/home');
+    } catch (err) {
+      alert(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 flex items-center justify-center p-4">
-      <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="w-24 h-24 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-3xl mx-auto mb-4 flex items-center justify-center">
-            <span className="text-4xl">💰</span>
+    <div className="min-h-screen overflow-hidden bg-slate-950 text-white relative">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(79,70,229,0.45),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(236,72,153,0.25),_transparent_26%),linear-gradient(135deg,_rgba(15,23,42,1)_0%,_rgba(2,6,23,1)_100%)]" />
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.08]" />
+      <div className="relative min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-md rounded-[2rem] border border-white/10 bg-white/8 backdrop-blur-2xl shadow-[0_25px_90px_rgba(0,0,0,0.55)] p-6">
+          <div className="text-center mb-7">
+            <div className="mx-auto mb-4 h-20 w-20 rounded-[1.8rem] bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-[0_15px_45px_rgba(99,102,241,0.45)] grid place-items-center text-3xl ring-1 ring-white/20">
+              💎
+            </div>
+            <h1 className="text-4xl font-black tracking-tight">RealEarn</h1>
+            <p className="text-white/65 mt-2">Verified tasks. Real AED. Premium experience.</p>
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            RealEarn
-          </h1>
-          <p className="text-gray-600 mt-2">Earn real AED by completing tasks</p>
-        </div>
 
-        <button
-          onClick={handleGoogleLogin}
-          disabled={loading}
-          className="w-full bg-white border-2 border-gray-200 hover:border-indigo-400 hover:shadow-lg rounded-2xl px-6 py-3 mb-4 flex items-center justify-center gap-3 text-lg font-medium transition-all duration-200"
-        >
-          <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
-          Continue with Google
-        </button>
+          <button
+            onClick={googleLogin}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 rounded-2xl bg-white text-slate-900 py-3.5 font-semibold hover:scale-[1.01] active:scale-[0.99] transition shadow-lg"
+          >
+            <FcGoogle className="text-2xl" />
+            Continue with Google
+          </button>
 
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
+          <div className="my-5 flex items-center gap-3">
+            <div className="h-px flex-1 bg-white/15" />
+            <span className="text-[11px] uppercase tracking-[0.35em] text-white/45">OR</span>
+            <div className="h-px flex-1 bg-white/15" />
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="px-2 bg-white text-gray-500">or</span>
-          </div>
-        </div>
 
-        <form onSubmit={handleEmailLogin} className="space-y-4 mt-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <form onSubmit={login} className="space-y-4">
             <input
-              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-              placeholder="your@email.com"
+              type="email"
+              placeholder="Email"
+              className="w-full rounded-2xl bg-white/8 border border-white/10 px-4 py-3 outline-none focus:border-indigo-400/70 focus:bg-white/10 transition placeholder:text-white/30"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
             <input
-              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-              placeholder="••••••••"
+              type="password"
+              placeholder="Password"
+              className="w-full rounded-2xl bg-white/8 border border-white/10 px-4 py-3 outline-none focus:border-indigo-400/70 focus:bg-white/10 transition placeholder:text-white/30"
             />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-          >
-            {loading ? 'Loading...' : 'Sign In'}
-          </button>
-        </form>
+            <button
+              disabled={loading}
+              className="w-full rounded-2xl bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 py-3.5 font-bold shadow-[0_15px_40px_rgba(99,102,241,0.35)] hover:brightness-110 transition"
+            >
+              Sign In
+            </button>
+          </form>
 
-        <button
-          onClick={handleSignup}
-          disabled={loading}
-          className="w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
-        >
-          Create Account
-        </button>
+          <button
+            onClick={signup}
+            disabled={loading}
+            className="mt-3 w-full rounded-2xl border border-white/12 bg-white/6 py-3.5 font-bold hover:bg-white/10 transition"
+          >
+            Create Account
+          </button>
+
+          <div className="mt-6 grid grid-cols-3 gap-3 text-center text-xs text-white/65">
+            <div className="rounded-2xl bg-white/6 p-3 border border-white/10">Secure login</div>
+            <div className="rounded-2xl bg-white/6 p-3 border border-white/10">Unique UID</div>
+            <div className="rounded-2xl bg-white/6 p-3 border border-white/10">Photo sync</div>
+          </div>
+        </div>
       </div>
     </div>
   );
-};
-
-export default Login;
+}
